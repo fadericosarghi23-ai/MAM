@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import Portfolio from '../../components/Portfolio.astro';
+import Cta from '../../components/Cta.astro';
+import { abs } from '../../data/site';
+import { progetti } from '../../data/progetti';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Realizzazioni', href: '/progetti/' }];
+const ld = [{
+  '@type': 'ItemList',
+  name: 'Realizzazioni',
+  numberOfItems: progetti.length,
+  itemListElement: progetti.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/progetti/${p.slug}/`), name: p.titolo })),
+}];
+---
+<Layout title="Realizzazioni | Geom. Brissoni Stefano, Scanzorosciate (BG)" description="Le realizzazioni del Geom. Brissoni Stefano: riqualificazioni energetiche e ristrutturazioni a Scanzorosciate e Zanica, un cambio d’uso a Bergamo e un condominio." pageType="CollectionPage" crumbs={crumbs} ld={ld}>
+<PageHead crumbs={crumbs} eyebrow="Realizzazioni" title="Le mie realizzazioni"> <p class="lead mt-3 narrow">Ogni nuovo progetto mi stimola a superare nuove sfide con soluzioni creative e di design. Dedico a ogni progetto la passione che mi ha sempre contraddistinto nel campo dell’edilizia.</p> </PageHead>
+<Portfolio lista={progetti} />
+<Cta />
+</Layout>

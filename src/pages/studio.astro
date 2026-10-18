@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Picture from '../components/Picture.astro';
+import Cta from '../components/Cta.astro';
+import { site } from '../data/site';
+import { team } from '../data/team';
+import { progetto } from '../data/progetti';
+import { numeriStudio, approccio, competenzeStudio } from '../data/contenuti';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Chi sono', href: '/studio/' }];
+const hero = progetto('appartamento-zanica').immagini[0];
+const foto = [progetto('villetta-scanzorosciate-2023').immagini[0], progetto('appartamento-zanica').immagini[3]];
+// Brissoni: l'elenco delle persone della rete è tolto (le collaborazioni hanno la loro pagina, /metodo/).
+---
+<Layout title="Chi sono | Geom. Brissoni Stefano, studio tecnico a Scanzorosciate (BG)" description="Geometra libero professionista dal 2016, iscritto all’albo al n. 4716 e laureato in Ingegneria Civile e Ambientale: lo studio tecnico di progettazione di Brissoni Stefano a Scanzorosciate." pageType="AboutPage" ogType="article" transparent crumbs={crumbs}>
+<PageHero img={hero} crumbs={crumbs} eyebrow="Chi sono"> <h1 class="h1-page">Studio tecnico <em style="color: var(--accent-on-dark)">di progettazione</em></h1> <p class="lead">Geometra libero professionista dal 2016, con sede a Scanzorosciate (BG).</p> </PageHero>
+<section class="section"> <div class="container split"> <div class="reveal"> <p class="eyebrow mb-2">Chi sono</p> <h2 class="h2">{site.nome}</h2> </div> <div class="prose lead reveal"> <p>Un’attenta e continua ricerca dello stile inteso come mix di materiali, colori e accessori, il quale accostamento veste la casa con eleganza e bellezza.</p> <p>L’obiettivo è di offrire al cliente professionalità, empatia e disponibilità con attenzione e cura ai dettagli grazie alla passione per il settore dell’edilizia che mi contraddistingue.</p> </div> </div> <div class="container mt-4"> <div class="stats reveal"> {numeriStudio.map((s) => <div class="stat"><strong>{s.n}</strong><span>{s.label}</span></div>)} </div> </div> </section>
+<section class="section bg-sand"> <div class="container"> <div class="section-head reveal"> <div> <p class="eyebrow">Approccio</p> <h2 class="h2">Come lavoro</h2> </div> </div> <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 2.5rem"> {approccio.map((a, i) => <div class="reveal border-top" style={`padding-top:1.5rem; transition-delay:${i * 80}ms`}> <p class="eyebrow mb-2">{String(i + 1).padStart(2, '0')}</p> <h3 class="h3 mb-2">{a.titolo}</h3> <p>{a.testo}</p> </div>)} </div> <div class="grid-2 mt-4"> {foto.map((f) => <div class="ratio-32 reveal"><Picture img={f} sizes="(min-width: 1024px) 45vw, 92vw" /></div>)} </div> </div> </section>
+<section class="section" id="team"> <div class="container"> <div class="section-head reveal"> <div> <p class="eyebrow">Il geometra</p> <h2 class="h2">Brissoni Stefano</h2> <p class="lead mt-2">Lavora con una rete di professionisti, imprese e fornitori: le <a href="/metodo/" class="link-underline">collaborazioni</a>.</p> </div> </div> <ul class="team-grid"> {team.map((m, i) => <li class="member reveal" id={m.id} style={`transition-delay:${(i % 4) * 60}ms`}> <div class="photo"><Picture img={m.foto} sizes="(min-width: 1100px) 22vw, (min-width: 768px) 30vw, 46vw" /></div> <h3>{m.nome}</h3> <p>{m.ruolo}</p> {m.bio && <p style="text-transform:none; letter-spacing:0; color:var(--text); font-size:.9375rem; font-weight:400; line-height:1.6; margin-top:.9rem">{m.bio}</p>} </li>)} </ul> </div> </section>
+<section class="section bg-sand"> <div class="container grid-2"> <div class="reveal"> <p class="eyebrow mb-2">Lo studio</p> <h2 class="h2">{site.indirizzo.citta}</h2> <p class="lead mt-3">{site.indirizzo.via}, {site.indirizzo.cap} {site.indirizzo.citta} ({site.indirizzo.provincia}).</p> <div class="btn-row mt-4"> <a href="/contatti/" class="btn btn-primary">Contatti</a> <a href={site.mapsUrl} target="_blank" rel="noopener" class="btn btn-outline">Indicazioni stradali</a> </div> </div> <div class="reveal"> <ul class="checklist lead"> {competenzeStudio.map((c) => <li>{c}</li>)} </ul> </div> </div> </section>
+<Cta />
+</Layout>

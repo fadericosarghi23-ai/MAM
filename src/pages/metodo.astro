@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Cta from '../components/Cta.astro';
+import { progetto } from '../data/progetti';
+import { fasi } from '../data/contenuti';
+
+// Brissoni: la pagina /metodo/ ospita le collaborazioni (vedi src/data/contenuti.ts).
+// Le card scure con foto (ProcessCards) restano in home; qui c'è solo l'elenco.
+// I loghi dei partner vengono dal sito attuale (src/data/contenuti.ts → fasi[].logo).
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Collaborazioni', href: '/metodo/' }];
+const hero = progetto('villetta-scanzorosciate-2025').immagini[0];
+---
+<Layout title="Collaborazioni | Geom. Brissoni Stefano, Scanzorosciate (BG)" description="Professionisti, imprese e fornitori che ampliano l’offerta del Geom. Brissoni Stefano: imprese edili, arredamento, ceramiche, ingegneria strutturale e impiantistica." ogType="article" transparent crumbs={crumbs}>
+<PageHero img={hero} crumbs={crumbs} eyebrow="Collaborazioni"> <h1 class="h1-page">Collaborazioni</h1> <p class="lead">Professionisti, imprese e fornitori che ampliano la mia offerta arricchendo i servizi proposti.</p> </PageHero>
+<section class="section bg-sand"> <div class="container"> <div class="section-head reveal"> <div> <p class="eyebrow mb-2">Partner</p> <h2 class="h2">Professionisti, imprese e fornitori</h2> </div> <a href="/servizi/" class="btn btn-primary">Tutti i servizi</a> </div> <ol class="steps"> {fasi.map((f, i) => <li id={`fase-${i + 1}`} class="reveal" style={`transition-delay:${(i % 3) * 60}ms`}> <span class="n">{String(i + 1).padStart(2, '0')}</span> <div style="height:4.5rem; margin:.5rem 0; display:flex; align-items:center">{f.logo && <img src={f.logo.src} alt={f.logo.alt} width={f.logo.width} height={f.logo.height} loading="lazy" decoding="async" style="height:100%; width:auto; max-width:10rem; object-fit:contain" />}</div> <h3 class="h4">{f.url ? <a href={f.url} target="_blank" rel="noopener" class="link-underline">{f.titolo}</a> : f.titolo}</h3> <p>{f.testo}</p> </li>)} </ol> </div> </section>
+<Cta />
+</Layout>

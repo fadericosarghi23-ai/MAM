@@ -1,0 +1,45 @@
+---
+/**
+ * Intro d'apertura col logo: una volta per sessione, alla prima pagina aperta.
+ * La classe `intro` su <html> la mette lo script inline in Layout.astro prima del primo paint
+ * (niente lampo di pagina): senza JS, con "riduci movimento" o se è già stata vista nella
+ * sessione, il pannello non viene mai mostrato.
+ * Sequenza: "GEOM." sale e appare, "BRISSONI STEFANO" si scopre da sinistra, la linea
+ * d'accento si allunga, poi il pannello scorre verso l'alto. Un clic o un tasto la saltano.
+ * Il logo è lo stesso file di header e footer (public/img/logo/logo-light.svg), inline per animarne le due righe.
+ */
+import logo from '../../public/img/logo/logo-light.svg?raw';
+---
+<div class="intro-overlay" aria-hidden="true" data-intro>
+  <div class="intro-mark">
+    <Fragment set:html={logo} />
+    <span class="intro-line"></span>
+  </div>
+</div>
+<style is:global>
+.intro-overlay{display:none}
+html.intro body{overflow:hidden}
+html.intro .intro-overlay{z-index:2000;background:var(--ink);justify-content:center;align-items:center;display:flex;position:fixed;inset:0;cursor:pointer;animation:intro-out .8s var(--ease) 2s forwards}
+.intro-mark{width:min(78vw,560px);position:relative}
+.intro-mark svg{width:100%;height:auto;display:block;overflow:visible}
+.intro-mark path:first-child{opacity:0;animation:intro-up .7s var(--ease) .2s forwards}
+.intro-mark path:last-child{clip-path:inset(0 100% 0 0);animation:intro-wipe 1s var(--ease) .45s forwards}
+.intro-line{background:var(--accent-on-dark);width:100%;height:2px;margin-top:1.4rem;display:block;transform:scaleX(0);transform-origin:left;animation:intro-line .8s var(--ease) 1.15s forwards}
+@keyframes intro-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes intro-wipe{to{clip-path:inset(0 0 0 0)}}
+@keyframes intro-line{to{transform:scaleX(1)}}
+@keyframes intro-out{to{transform:translateY(-100%)}}
+</style>
+<script>
+const el = document.querySelector<HTMLElement>('[data-intro]');
+const html = document.documentElement;
+if (el && html.classList.contains('intro')) {
+  const fine = () => { html.classList.remove('intro'); el.remove(); };
+  el.addEventListener('animationend', (e) => { if (e.target === el) fine(); });
+  el.addEventListener('click', fine);
+  document.addEventListener('keydown', fine, { once: true });
+  window.setTimeout(fine, 4000); // rete lenta o animazioni bloccate: la pagina non resta mai coperta
+} else {
+  el?.remove();
+}
+</script>

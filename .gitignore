@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.env
+
+# generato su Windows: su Linux fa saltare i binding nativi (npm#4828)
+package-lock.json
+
+# originali scaricati dal sito attuale del cliente (servono solo a rigenerare le varianti)
+scripts/.cache-originali/
+
+# configurazione locale dell'anteprima
+.claude/

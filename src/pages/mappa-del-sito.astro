@@ -1,14 +1,29 @@
 ---
+/** Mappa del sito: elenco delle pagine (utile a utenti e crawler). */
 import Layout from '../layouts/Layout.astro';
-import PageHead from '../components/PageHead.astro';
-import { site } from '../data/site';
 import { nav } from '../data/nav';
-import { servizi } from '../data/servizi';
-import { categorie, inCategoria } from '../data/progetti';
+import { progetti } from '../data/progetti';
+import { site } from '../data/site';
 
+const title = `Mappa del sito | ${site.nome}`;
+const description = 'Elenco delle pagine del sito.';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Mappa del sito', href: '/mappa-del-sito/' }];
 ---
-<Layout title={`Mappa del sito | ${site.nome}`} description={`Tutte le pagine del sito di ${site.nome}: chi sono, servizi, collaborazioni, realizzazioni e contatti.`} crumbs={crumbs}>
-<PageHead crumbs={crumbs} title="Mappa del sito" />
-<section class="section"> <div class="container grid-2 prose"> <div> <h2>Pagine</h2> <ul> <li><a href="/">Home</a></li> {nav.map((v) => <li><a href={v.href}>{v.label}</a></li>)} <li><a href="/privacy-policy/">Privacy policy</a></li> <li><a href="/cookie-policy/">Cookie policy</a></li> </ul> <h2>Servizi</h2> <ul>{servizi.map((s) => <li><a href={`/servizi/#${s.id}`}>{s.nome}</a></li>)}</ul> </div> <div>  {categorie.map((c) => <><h2><a href={`/progetti/${c.slug}/`} style="text-decoration:none; color:inherit">{c.nome}</a></h2> <ul>{inCategoria(c.id).map((p) => <li><a href={`/progetti/${p.slug}/`}>{p.titolo}</a> <span class="muted small">— {p.luogo}</span></li>)}</ul></>)} </div> </div> </section>
+<Layout title={title} description={description} crumbs={crumbs}>
+  <div class="container section">
+    <h1 class="h-title">Mappa del sito</h1>
+    <ul style="margin-top:1.5rem;display:grid;gap:.5rem">
+      <li><a class="link-underline" href="/">Home</a></li>
+      {nav.map((v) => <li><a class="link-underline" href={v.href}>{v.label}</a></li>)}
+    </ul>
+    <h2 class="h-title" style="margin-top:2rem">Progetti</h2>
+    <ul style="margin-top:1rem;display:grid;gap:.5rem">
+      {progetti.map((p) => <li><a class="link-underline" href={`/progetti/${p.slug}/`}>{p.titolo}</a></li>)}
+    </ul>
+    <h2 class="h-title" style="margin-top:2rem">Informazioni legali</h2>
+    <ul style="margin-top:1rem;display:grid;gap:.5rem">
+      <li><a class="link-underline" href="/privacy-policy/">Privacy policy</a></li>
+      <li><a class="link-underline" href="/cookie-policy/">Cookie policy</a></li>
+    </ul>
+  </div>
 </Layout>

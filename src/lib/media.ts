@@ -26,12 +26,13 @@ export type Img = {
   widths?: number[];
 };
 
-type Ph = { width: number; height: number; label: string };
+type Ph = { width: number; height: number; label: string; dark?: boolean };
 export const placeholders = new Map<string, Ph>();
 
-/** Segnaposto delle stesse misure dell'originale. L'alt resta "DA COMPILARE: ..." */
-export function ph(id: string, width: number, height: number, label: string, opts: { drawing?: boolean; alt?: string } = {}): Img {
-  placeholders.set(id, { width, height, label });
+/** Segnaposto delle stesse misure dell'originale. L'alt resta "DA COMPILARE: ..."
+ *  opts.dark = fondo scuro (per gli hero a tutta pagina con header trasparente chiaro). */
+export function ph(id: string, width: number, height: number, label: string, opts: { drawing?: boolean; alt?: string; dark?: boolean } = {}): Img {
+  placeholders.set(id, { width, height, label, dark: opts.dark });
   return {
     src: `/img/placeholder/${id}.svg`,
     width,

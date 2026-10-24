@@ -4,13 +4,10 @@
  * footer e lo script condiviso (header che diventa pieno, menu mobile, reveal con
  * IntersectionObserver) ripreso alla lettera dal sito sorgente.
  */
-import '@fontsource-variable/inter';
-import '@fontsource-variable/newsreader';
-import '@fontsource-variable/newsreader/wght-italic.css';
+import '@fontsource-variable/open-sans';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Intro from '../components/Intro.astro';
 import { site, abs } from '../data/site';
 import { team } from '../data/team';
 import { servizi } from '../data/servizi';
@@ -36,7 +33,7 @@ const {
   description,
   pageType = 'WebPage',
   ogType = 'website',
-  ogImage = '/img/og/og-default.png',
+  ogImage = '/img/placeholder/og-default.svg',
   noindex = false,
   transparent = false,
   crumbs,
@@ -71,6 +68,16 @@ const graph: Record<string, unknown>[] = [
     },
     ...(geo ? { geo: { '@type': 'GeoCoordinates', latitude: geo.lat, longitude: geo.lng } } : {}),
     hasMap: site.mapsUrl,
+    ...(site.orari.length
+      ? {
+          openingHoursSpecification: site.orari.map((o) => ({
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: o.days.map((d) => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d]),
+            opens: o.opens,
+            closes: o.closes,
+          })),
+        }
+      : {}),
     areaServed: site.areeServite.map((a) => ({ '@type': a.tipo, name: a.nome })),
     knowsAbout: site.competenze,
     sameAs: site.social.map((s) => s.url),
@@ -88,7 +95,7 @@ const graph: Record<string, unknown>[] = [
       name: `Servizi di ${site.nome}`,
       itemListElement: servizi.map((s) => ({
         '@type': 'Offer',
-        itemOffered: { '@type': 'Service', name: s.nome, description: s.breve, url: abs(`/servizi/#${s.id}`) },
+        itemOffered: { '@type': 'Service', name: s.nome, description: s.breve },
       })),
     },
   },
@@ -147,17 +154,14 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
 <meta name="twitter:title" content={title}>
 <meta name="twitter:description" content={description}>
 <meta name="twitter:image" content={og}>
-<link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="sitemap" href="/sitemap-index.xml">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <script type="application/ld+json" set:html={jsonld} />
-<script is:inline>document.documentElement.classList.remove('no-js');try{if(!sessionStorage.getItem('intro-vista')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');sessionStorage.setItem('intro-vista','1')}}catch(e){}</script>
+<script is:inline>document.documentElement.classList.remove('no-js')</script>
 </head>
 <body>
-<Intro />
 <a href="#main" class="skip-link">Salta al contenuto</a>
 <Header transparent={transparent} />
 <main id="main">

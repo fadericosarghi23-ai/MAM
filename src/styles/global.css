@@ -154,8 +154,6 @@ body.menu-open{overflow:hidden}
 .site-footer a:hover{text-decoration:underline;text-underline-offset:3px}
 .site-footer .links{display:grid;gap:.15rem;margin-top:.75rem;color:var(--muted)}
 .site-footer .bottom{border-top:1px solid var(--line);margin-top:2.5rem;padding-top:1.25rem;text-align:center;color:var(--muted);font-size:.85rem}
-.site-footer .credit{margin-top:.45rem;font-size:.72rem;letter-spacing:.06em;color:var(--muted)}
-.site-footer .credit strong{color:var(--ink);font-weight:600;letter-spacing:.14em}
 
 /* ── Reveal in scroll (fade-up). Senza JS i contenuti restano visibili. ── */
 html:not(.no-js) .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}

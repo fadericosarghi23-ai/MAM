@@ -2,7 +2,7 @@
 /** Mappa del sito: elenco delle pagine (utile a utenti e crawler). */
 import Layout from '../layouts/Layout.astro';
 import { nav } from '../data/nav';
-import { progetti } from '../data/progetti';
+import { mam } from '../data/mam';
 import { site } from '../data/site';
 
 const title = `Mappa del sito | ${site.nome}`;
@@ -16,9 +16,9 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'Mappa del sito', href: '/m
       <li><a class="link-underline" href="/">Home</a></li>
       {nav.map((v) => <li><a class="link-underline" href={v.href}>{v.label}</a></li>)}
     </ul>
-    <h2 class="h-title" style="margin-top:2rem">Progetti</h2>
+    <h2 class="h-title" style="margin-top:2rem"><a class="link-underline" href="/progetti/">Progetti</a></h2>
     <ul style="margin-top:1rem;display:grid;gap:.5rem">
-      {progetti.map((p) => <li><a class="link-underline" href={`/progetti/${p.slug}/`}>{p.titolo}</a></li>)}
+      {mam.progetti.map((p) => <li>{p.titolo}</li>)}
     </ul>
     <h2 class="h-title" style="margin-top:2rem">Informazioni legali</h2>
     <ul style="margin-top:1rem;display:grid;gap:.5rem">

@@ -1,26 +1,36 @@
 ---
-/**
- * Progetti (works): griglia a 2 colonne di quadrati 1:1, titolo in overlay all'hover.
- * Stessa impaginazione del sorgente. H1 nascosto per il SEO.
- */
+/** Progetti: griglia semplice con le immagini reali, lightbox al clic. */
 import Layout from '../../layouts/Layout.astro';
-import Picture from '../../components/Picture.astro';
-import { progetti } from '../../data/progetti';
+import { mam } from '../../data/mam';
 
-const title = '[[DA COMPILARE: title SEO pagina progetti, es. "Progetti | <nome> — <città>"]]';
-const description = '[[DA COMPILARE: meta description progetti, 140-160 caratteri]]';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Progetti', href: '/progetti/' }];
 ---
-<Layout title={title} description={description} pageType="CollectionPage" crumbs={crumbs}>
-  <div class="container">
-    <h1 class="sr-only">Progetti</h1>
-    <div class="works-grid">
-      {progetti.map((p) => (
-        <a class="work-card reveal" href={`/progetti/${p.slug}/`} aria-label={p.titolo}>
-          <Picture img={p.thumb} sizes="(min-width:640px) 50vw, 100vw" />
+<Layout title="Progetti · MAM Architetti — Vicenza" description="I progetti di MAM Architetti: architettura, interni e allestimenti a Vicenza e non solo." pageType="CollectionPage" crumbs={crumbs}>
+  <section class="landing-works container" style="padding-top:calc(var(--header-h) + 3rem)" aria-label="Progetti">
+    <h1 class="eyebrow" style="text-align:center;margin-bottom:2.5rem">Progetti</h1>
+    <div class="works-grid flat">
+      {mam.progetti.map((p) => (
+        <button type="button" class="work-card" data-full={p.img} aria-label={`Ingrandisci ${p.titolo}`}>
+          <img src={p.img} alt={`${p.titolo} — MAM Architetti`} loading="lazy" decoding="async">
           <span class="overlay"><span>{p.titolo}</span></span>
-        </a>
+        </button>
       ))}
     </div>
+  </section>
+
+  <div class="lightbox" data-lb aria-hidden="true">
+    <button type="button" class="close" data-lb-close aria-label="Chiudi">×</button>
+    <img data-lb-img alt="">
   </div>
 </Layout>
+
+<script>
+  const lb = document.querySelector<HTMLElement>('[data-lb]');
+  const lbImg = lb?.querySelector<HTMLImageElement>('[data-lb-img]');
+  const cards = [...document.querySelectorAll<HTMLButtonElement>('.work-card[data-full]')];
+  const open = (src: string, alt: string) => { if (!lb || !lbImg) return; lbImg.src = src; lbImg.alt = alt; lb.classList.add('is-open'); document.body.style.overflow = 'hidden'; };
+  const close = () => { lb?.classList.remove('is-open'); document.body.style.overflow = ''; };
+  cards.forEach((c) => c.addEventListener('click', () => open(c.dataset.full || '', c.querySelector('img')?.alt || '')));
+  lb?.addEventListener('click', (e) => { const t = e.target as HTMLElement; if (t === lb || t.hasAttribute('data-lb-close')) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+</script>

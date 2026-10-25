@@ -33,7 +33,7 @@ const {
   description,
   pageType = 'WebPage',
   ogType = 'website',
-  ogImage = '/img/placeholder/og-default.svg',
+  ogImage = '/img/mam/hero.jpeg',
   noindex = false,
   transparent = false,
   crumbs,
@@ -86,7 +86,7 @@ const graph: Record<string, unknown>[] = [
       '@id': abs(`/studio/#${m.id}`),
       name: m.nome,
       jobTitle: m.ruolo,
-      image: abs(m.foto.src),
+      ...(m.foto ? { image: abs(m.foto) } : {}),
       worksFor: { '@id': ORG },
     })),
     numberOfEmployees: { '@type': 'QuantitativeValue', value: team.length },
@@ -147,8 +147,8 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
 <meta property="og:description" content={description}>
 <meta property="og:url" content={url}>
 <meta property="og:image" content={og}>
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
 <meta property="og:image:alt" content={`${site.nome} — ${site.attivita}`}>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content={title}>

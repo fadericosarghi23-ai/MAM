@@ -1,39 +1,52 @@
 ---
 /**
- * Studio (about): foto di apertura, paragrafo di presentazione, elenchi di persone
- * (Fondatori / Collaboratori / Hanno collaborato). Stessa struttura del sorgente.
+ * Studio: apertura + presentazione + organigramma ad albero
+ * (Fondatori con foto → Collaboratori → Hanno collaborato).
  */
 import Layout from '../layouts/Layout.astro';
-import Picture from '../components/Picture.astro';
 import { studioIntro, studioHero, fondatori, collaboratori, hannoCollaborato } from '../data/team';
 
-const title = '[[DA COMPILARE: title SEO studio, es. "Studio | <nome> — architetti a <città>"]]';
-const description = '[[DA COMPILARE: meta description studio, 140-160 caratteri]]';
+const title = 'Studio · MAM Architetti — architetti a Vicenza';
+const description = 'Lo studio MAM Architetti a Vicenza: fondatori, collaboratori e approccio progettuale.';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Studio', href: '/studio/' }];
+const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 ---
 <Layout title={title} description={description} pageType="AboutPage" crumbs={crumbs}>
   <h1 class="sr-only">Studio</h1>
-  <div class="about-hero container reveal"><Picture img={studioHero} sizes="100vw" eager /></div>
-  <div class="container">
-    <p class="about-intro reveal">{studioIntro}</p>
+  <div class="about-hero container"><img src={studioHero.src} alt={studioHero.alt} width="1600" height="900" fetchpriority="high" decoding="async"></div>
 
-    <div class="people section">
-      <div class="reveal">
-        <h2>Fondatori</h2>
-        <ul>{fondatori.map((f) => <li>{f.nome}</li>)}</ul>
+  <div class="container">
+    <p class="about-intro">{studioIntro}</p>
+
+    <section class="org section">
+      <p class="org-label">Fondatori</p>
+      <div class="org-founders">
+        {fondatori.map((f) => (
+          <div class="founder" id={f.id}>
+            {f.foto
+              ? <img class="photo" src={f.foto} alt={f.nome} width="118" height="118" loading="lazy" decoding="async">
+              : <div class="photo placeholder" title={`Aggiungi la foto di ${f.nome}`} aria-hidden="true">{initials(f.nome)}</div>}
+            <div class="nome">{f.nome}</div>
+            <div class="ruolo">{f.ruolo}</div>
+          </div>
+        ))}
       </div>
+
       {collaboratori.length > 0 && (
-        <div class="reveal">
-          <h2>Collaboratori</h2>
-          <ul>{collaboratori.map((n) => <li>{n}</li>)}</ul>
-        </div>
+        <>
+          <div class="org-link"></div>
+          <p class="org-label">Collaboratori</p>
+          <div class="org-collabs">{collaboratori.map((n) => <span>{n}</span>)}</div>
+        </>
       )}
+
       {hannoCollaborato.length > 0 && (
-        <div class="reveal">
-          <h2>Hanno collaborato</h2>
-          <ul>{hannoCollaborato.map((n) => <li>{n}</li>)}</ul>
-        </div>
+        <>
+          <div class="org-link"></div>
+          <p class="org-label">Hanno collaborato</p>
+          <div class="org-leaves">{hannoCollaborato.map((n) => <span>{n}</span>)}</div>
+        </>
       )}
-    </div>
+    </section>
   </div>
 </Layout>

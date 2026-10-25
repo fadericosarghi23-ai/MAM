@@ -1,47 +1,78 @@
 ---
 /**
- * Home: slideshow a tutto schermo (dissolvenza automatica + pallini), header trasparente.
- * Stessa struttura del sorgente. L'H1 è nascosto visivamente ma presente per il SEO.
+ * Home come l'originale MAM: slideshow a tutto schermo. In più, qualche scritta (nome/claim sopra
+ * lo slideshow + una frase sullo studio) e la griglia progetti con lightbox. Essenziale.
  */
 import Layout from '../layouts/Layout.astro';
-import Picture from '../components/Picture.astro';
-import { home } from '../data/home';
+import { mam } from '../data/mam';
+import { site } from '../data/site';
 ---
-<Layout title={home.title} description={home.description} transparent={true}>
-  <h1 class="sr-only">{home.h1}</h1>
+<Layout title="MAM Architetti · Studio di architettura a Vicenza" description={site.descrizione} transparent={false}>
   <section class="hero" aria-label="Realizzazioni dello studio">
     <div class="hero-slides">
-      {home.slides.map((img, i) => (
+      {mam.slides.map((src, i) => (
         <div class:list={['hero-slide', i === 0 && 'is-active']} data-slide={i}>
-          <Picture img={img} sizes="100vw" eager={i === 0} />
+          <img src={src} alt="MAM Architetti — architettura a Vicenza" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} decoding="async">
         </div>
       ))}
     </div>
+    <div class="hero-overlay">
+      <p class="hero-eyebrow">{mam.intro.eyebrow}</p>
+      <p class="hero-claim">{mam.intro.titolo}</p>
+    </div>
     <div class="hero-dots" aria-label="Scegli slide">
-      {home.slides.map((_, i) => (
+      {mam.slides.map((_, i) => (
         <button type="button" data-dot={i} aria-current={i === 0 ? 'true' : 'false'} aria-label={`Slide ${i + 1}`}></button>
       ))}
     </div>
   </section>
+
+  <section class="landing-intro">
+    <h1>Studio di architettura a Vicenza</h1>
+    <p class="t">{mam.intro.testo}</p>
+  </section>
+
+  <section class="landing-works container" id="progetti" aria-label="Progetti">
+    <div class="works-grid flat">
+      {mam.progetti.map((p) => (
+        <button type="button" class="work-card" data-full={p.img} aria-label={`Ingrandisci ${p.titolo}`}>
+          <img src={p.img} alt={`${p.titolo} — MAM Architetti`} loading="lazy" decoding="async">
+          <span class="overlay"><span>{p.titolo}</span></span>
+        </button>
+      ))}
+    </div>
+  </section>
+
+  <div class="lightbox" data-lb aria-hidden="true">
+    <button type="button" class="close" data-lb-close aria-label="Chiudi">×</button>
+    <img data-lb-img alt="">
+  </div>
 </Layout>
 
 <script>
-  // Slideshow hero: dissolvenza automatica ogni 6s + pallini cliccabili.
+  // Slideshow: dissolvenza automatica + pallini.
   const slides = [...document.querySelectorAll<HTMLElement>('.hero-slide')];
   const dots = [...document.querySelectorAll<HTMLButtonElement>('.hero-dots button')];
   if (slides.length > 1) {
-    let i = 0;
-    let timer: number | undefined;
+    let i = 0, timer: number | undefined;
     const go = (n: number) => {
-      slides[i].classList.remove('is-active');
-      dots[i]?.setAttribute('aria-current', 'false');
+      slides[i].classList.remove('is-active'); dots[i]?.setAttribute('aria-current', 'false');
       i = (n + slides.length) % slides.length;
-      slides[i].classList.add('is-active');
-      dots[i]?.setAttribute('aria-current', 'true');
+      slides[i].classList.add('is-active'); dots[i]?.setAttribute('aria-current', 'true');
     };
     const start = () => { timer = window.setInterval(() => go(i + 1), 6000); };
     const stop = () => window.clearInterval(timer);
     dots.forEach((d, n) => d.addEventListener('click', () => { stop(); go(n); start(); }));
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) start();
   }
+
+  // Lightbox progetti.
+  const lb = document.querySelector<HTMLElement>('[data-lb]');
+  const lbImg = lb?.querySelector<HTMLImageElement>('[data-lb-img]');
+  const cards = [...document.querySelectorAll<HTMLButtonElement>('.work-card[data-full]')];
+  const open = (src: string, alt: string) => { if (!lb || !lbImg) return; lbImg.src = src; lbImg.alt = alt; lb.classList.add('is-open'); document.body.style.overflow = 'hidden'; };
+  const close = () => { lb?.classList.remove('is-open'); document.body.style.overflow = ''; };
+  cards.forEach((c) => c.addEventListener('click', () => open(c.dataset.full || '', c.querySelector('img')?.alt || '')));
+  lb?.addEventListener('click', (e) => { const t = e.target as HTMLElement; if (t === lb || t.hasAttribute('data-lb-close')) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 </script>

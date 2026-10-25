@@ -12,3 +12,6 @@ scripts/.cache-originali/
 
 # configurazione locale dell'anteprima
 .claude/
+
+# report/deliverable (non fa parte del codice del sito)
+MAM-interventi-sito.pdf

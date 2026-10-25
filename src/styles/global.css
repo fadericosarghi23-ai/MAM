@@ -90,7 +90,11 @@ em{font-style:italic}
 body.menu-open{overflow:hidden}
 
 /* ── Hero slideshow (home) ────────────────────────────────────────── */
-.hero{position:relative;height:100vh;min-height:620px;overflow:hidden;background:#111}
+.hero{position:relative;margin-top:var(--header-h);height:calc(100vh - var(--header-h));min-height:520px;overflow:hidden;background:#111}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgba(0,0,0,.5));z-index:1;pointer-events:none}
+.hero-overlay{position:absolute;left:0;right:0;bottom:3.25rem;z-index:2;text-align:center;color:#fff;padding-inline:1.5rem}
+.hero-eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#fff;opacity:.85;margin:0 0 .8rem}
+.hero-claim{font-size:clamp(1.3rem,2.6vw,2.1rem);font-weight:600;line-height:1.3;max-width:24ch;margin:0 auto;text-shadow:0 1px 24px rgba(0,0,0,.4)}
 .hero-slides{position:absolute;inset:0}
 .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s var(--ease);will-change:opacity}
 .hero-slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 6s linear}
@@ -170,3 +174,44 @@ html:not(.no-js) .reveal.is-in{opacity:1;transform:none}
 .lightbox[open],.lightbox.is-open{display:flex}
 .lightbox img{max-width:92vw;max-height:88vh;width:auto;height:auto;object-fit:contain}
 .lightbox .close{position:absolute;top:1.25rem;right:1.5rem;color:#fff;font-size:2rem;line-height:1}
+
+/* ── Landing semplice ─────────────────────────────────────────────── */
+.landing-intro{max-width:880px;margin-inline:auto;padding:4.5rem 1.25rem 2.5rem;text-align:center}
+.landing-intro h1{font-size:clamp(1.7rem,3.2vw,2.7rem);font-weight:600;line-height:1.22;margin:1.1rem 0 0;color:var(--ink)}
+.landing-intro p.t{color:var(--muted);line-height:1.8;max-width:46rem;margin:1.5rem auto 0;font-size:1.0625rem}
+.hero-band img{width:100%;height:clamp(300px,52vh,600px);object-fit:cover;display:block}
+.landing-works{padding-block:4rem}
+.works-grid.flat{padding-top:0;grid-template-columns:repeat(3,1fr)}
+@media (width<700px){.works-grid.flat{grid-template-columns:repeat(2,1fr)}}
+
+/* icona social nel footer: piccola e in linea */
+.site-footer .links svg{width:1.1rem;height:1.1rem;display:inline-block;vertical-align:-.2em;margin-right:.35rem}
+.site-footer .links a{display:inline-flex;align-items:center}
+
+/* mappa in palette col sito (monocroma) */
+.contact-map{margin-top:2.5rem}
+.contact-map iframe{width:100%;height:440px;border:0;display:block;filter:grayscale(1) contrast(1.04)}
+
+/* Organigramma studio (albero) */
+.org{max-width:60rem;margin-inline:auto;text-align:center}
+.org .org-label{font-size:.8125rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 1.75rem}
+.org .org-link{width:1px;height:48px;background:var(--line);margin:2.25rem auto}
+.org-founders{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(1.5rem,6vw,4.5rem)}
+.founder{width:160px}
+.founder .photo{width:118px;height:118px;border-radius:50%;margin:0 auto .9rem;object-fit:cover;border:1px solid var(--line);display:grid;place-items:center;background:#f2f2f2}
+.founder .photo.placeholder{color:#9a9a9a;font-weight:600;font-size:1.5rem;letter-spacing:.03em}
+.founder .nome{font-weight:600;line-height:1.3}
+.founder .ruolo{color:var(--muted);font-size:.85rem;margin-top:.15rem}
+.org-collabs{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem 2.5rem;font-weight:500}
+.org-leaves{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1.4rem;max-width:46rem;margin-inline:auto;color:var(--muted)}
+
+/* Form contatti (minimale, in palette) */
+.contact-form{max-width:36rem;margin:2.5rem auto 0;display:grid;gap:1.25rem;text-align:left}
+.contact-form label{display:grid;gap:.4rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.contact-form input,.contact-form textarea{font:inherit;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line);padding:.6rem 0;transition:border-color .3s;border-radius:0}
+.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--ink)}
+.contact-form textarea{resize:vertical;min-height:130px;line-height:1.6}
+.contact-form .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contact-form button{justify-self:start;margin-top:.5rem;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;background:var(--ink);color:#fff;border:0;padding:.9rem 2.1rem;cursor:pointer;transition:opacity .3s}
+.contact-form button:hover{opacity:.85}
+.contact-form .msg{font-size:.9rem;color:var(--muted)}

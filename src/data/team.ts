@@ -1,37 +1,42 @@
 /**
- * Studio (about): testo di presentazione, foto di apertura e gli elenchi di persone come il
- * sorgente (Fondatori / Collaboratori / Hanno collaborato). `team` (i fondatori) alimenta anche
- * il JSON-LD employee in Layout.astro. Tutto a segnaposto nella base.
+ * Studio (about): testo e persone reali di MAM. L'organigramma è ad albero
+ * (Fondatori → Collaboratori → Hanno collaborato). I 3 fondatori hanno uno slot foto:
+ * per aggiungere la foto, metti il file in public/img/mam/team/ e valorizza `foto`.
+ * `team` (i fondatori) alimenta anche il JSON-LD employee in Layout.astro.
  */
-import { ph, type Img } from '../lib/media';
+import { type Img } from '../lib/media';
 
-/** Paragrafo di presentazione (testo indicizzabile, importante per il SEO) */
+/** Paragrafo di presentazione (dal sito di MAM) */
 export const studioIntro =
-  '[[DA COMPILARE: presentazione dello studio, 3-5 frasi: chi siete, approccio, ambiti (architettura, interni, retail…). Testo utile al posizionamento.]]';
+  'Lo studio nasce dalla volontà di un gruppo di professionisti di collaborare per fondere assieme le proprie esperienze e creare nuove sinergie. L’attenzione progettuale è trasversale dal retail all’allestimento, dalla ricerca e sviluppo alla riflessione critica sul progetto, dall’edilizia residenziale a quella industriale con il medesimo approccio. Il team si occupa prevalentemente di progettazione architettonica, direzione artistica, direzione lavori, sicurezza cantiere e consulenze per lo sviluppo di concept e re-branding.';
 
-/** Foto di apertura della pagina studio (stesse misure del sorgente) */
-export const studioHero = ph('studio-hero', 1600, 900, 'STUDIO · APERTURA', { dark: true });
+/** Foto di apertura della pagina studio */
+export const studioHero: Img = { src: '/img/mam/hero.jpeg', width: 1600, height: 900, alt: 'MAM Architetti — studio di architettura a Vicenza' };
 
-export type Persona = { id: string; nome: string; ruolo: string; foto: Img };
+export type Persona = {
+  id: string;
+  nome: string;
+  ruolo: string;
+  /** Percorso foto (es. '/img/mam/team/michele-cecchetto.jpg'). Vuoto = segnaposto con iniziali. */
+  foto?: string;
+};
 
-/** Fondatori: mostrati nell'elenco e usati nel JSON-LD (Person employee). */
+/** Fondatori: i 3 "più importanti", con slot foto. Elenco + JSON-LD (Person employee). */
 export const fondatori: Persona[] = [
-  { id: 'fondatore-1', nome: '[[DA COMPILARE: fondatore 1]]', ruolo: 'Fondatore', foto: ph('team-1', 600, 600, 'FONDATORE 1') },
-  { id: 'fondatore-2', nome: '[[DA COMPILARE: fondatore 2]]', ruolo: 'Fondatore', foto: ph('team-2', 600, 600, 'FONDATORE 2') },
-  { id: 'fondatore-3', nome: '[[DA COMPILARE: fondatore 3]]', ruolo: 'Fondatore', foto: ph('team-3', 600, 600, 'FONDATORE 3') },
+  { id: 'michele-cecchetto', nome: 'Michele Cecchetto', ruolo: 'Fondatore', foto: '' },
+  { id: 'alberto-zampieri', nome: 'Alberto Zampieri', ruolo: 'Fondatore', foto: '' },
+  { id: 'michele-zorzan', nome: 'Michele Zorzan', ruolo: 'Fondatore', foto: '' },
 ];
 
-/** Collaboratori attuali (solo nomi, come il sorgente) */
-export const collaboratori: string[] = [
-  '[[DA COMPILARE: collaboratore 1]]',
-  '[[DA COMPILARE: collaboratore 2]]',
-  '[[DA COMPILARE: collaboratore 3]]',
-];
+/** Collaboratori */
+export const collaboratori: string[] = ['Riccardo De Cani', 'Erica Bolis', 'Michelangelo Portinari'];
 
-/** Hanno collaborato (elenco nomi, facoltativo) */
+/** Hanno collaborato */
 export const hannoCollaborato: string[] = [
-  '[[DA COMPILARE: ex collaboratore 1]]',
-  '[[DA COMPILARE: ex collaboratore 2]]',
+  'Alberto Provolo', 'Alessandro Fantin', 'Dario Fanton', 'Cecilia Fortuna', 'Miriam Nuzzarello',
+  'Pietro Zampieri', 'Francesco Baggio', 'Giulia Schiavo', 'Marco de Visini', 'Marco Trevisan',
+  'Clara Simonetto', 'Alessandro Fantini', 'Beatrice Cavalcante', 'Anna Ravarotto', 'Vania Corsia',
+  'Veronica Vigolo', 'Irene Tamiello',
 ];
 
 /** Alias per il JSON-LD employee in Layout.astro */

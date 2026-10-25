@@ -11,5 +11,4 @@
   # su Netlify si installa fresco
   NPM_FLAGS = "--no-package-lock"
 
-# Redirect dai vecchi indirizzi: il sito attuale del cliente è su un sottodominio Wix
-# (geombrissoni.wixsite.com/bris), quindi non ci sono vecchie rotte da reindirizzare su questo dominio.
+# Sito statico di MAM Architetti (Astro). Il dominio canonico arriva dalla variabile URL di Netlify.

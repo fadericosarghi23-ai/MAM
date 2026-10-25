@@ -1,33 +1,76 @@
 ---
 /**
- * Contatti: foto di apertura come il sorgente. In più (per il SEO locale e l'usabilità) il blocco
- * NAP con microdati PostalAddress: nome, indirizzo, email, telefono, orari, indicazioni stradali.
+ * Contatti: immagine + NAP (microdati) + form + mappa monocroma.
+ * Invio del form: se site.form.endpoint è valorizzato fa POST lì (es. Formspree); se
+ * site.form.netlify è true usa Netlify Forms; altrimenti apre l'email precompilata (mailto).
  */
 import Layout from '../layouts/Layout.astro';
-import Picture from '../components/Picture.astro';
 import { site } from '../data/site';
-import { contactHero } from '../data/contenuti';
+import { mam } from '../data/mam';
 
-const title = '[[DA COMPILARE: title SEO contatti, es. "Contatti | <nome> — <città>"]]';
-const description = '[[DA COMPILARE: meta description contatti, 140-160 caratteri]]';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Contatti', href: '/contatti/' }];
 const prov = site.indirizzo.provincia;
+const mapQ = encodeURIComponent(`${site.indirizzo.via}, ${site.indirizzo.cap} ${site.indirizzo.citta}`);
+
+const f = site.form;
+const useEndpoint = !!f.endpoint;
+const useNetlify = !useEndpoint && f.netlify;
+const useMailto = !useEndpoint && !f.netlify;
 ---
-<Layout title={title} description={description} pageType="ContactPage" crumbs={crumbs}>
-  <h1 class="sr-only">Contatti</h1>
-  <div class="contact-hero container reveal"><Picture img={contactHero} sizes="100vw" eager /></div>
+<Layout title="Contatti · MAM Architetti — Vicenza" description="Contatta MAM Architetti a Vicenza: scrivici dal form, oppure indirizzo, telefono, email e mappa." pageType="ContactPage" crumbs={crumbs}>
+  <div class="contact-hero container"><img src={mam.hero} alt="MAM Architetti — studio di architettura a Vicenza" width="1600" height="900" fetchpriority="high" decoding="async"></div>
 
   <div class="container">
-    <div class="contact-info reveal" itemscope itemtype="https://schema.org/PostalAddress">
-      <p style="color:var(--ink);font-weight:600;font-size:1.1rem">{site.nome}</p>
+    <div class="contact-info" itemscope itemtype="https://schema.org/PostalAddress">
+      <h1 style="font-size:1.15rem;font-weight:600;color:var(--ink)">{site.nome}</h1>
       <p class="muted">
         <span itemprop="streetAddress">{site.indirizzo.via}</span>, <span itemprop="postalCode">{site.indirizzo.cap}</span>
         <span itemprop="addressLocality">{site.indirizzo.citta}</span>{prov && <> (<span itemprop="addressRegion">{prov}</span>)</>}
       </p>
       {site.email && <a href={`mailto:${site.email}`}>{site.email}</a>}
       {site.telefono && <a href={`tel:${site.telefonoE164}`}>{site.telefono}</a>}
-      {site.ricevimento && <p class="muted mt-2">{site.ricevimento}</p>}
       {site.mapsUrl && <a href={site.mapsUrl} target="_blank" rel="noopener">Indicazioni stradali</a>}
+    </div>
+
+    <form
+      class="contact-form"
+      {...(useEndpoint ? { action: f.endpoint, method: 'post' } : {})}
+      {...(useNetlify ? { 'data-netlify': 'true', name: 'contatti', method: 'post' } : {})}
+      data-mailto={useMailto ? f.mailto : undefined}
+    >
+      {useNetlify && <input type="hidden" name="form-name" value="contatti" />}
+      <p class="hp"><label>Lascia vuoto<input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+      <label>Nome e cognome<input name="nome" required autocomplete="name" /></label>
+      <label>Email<input type="email" name="email" required autocomplete="email" /></label>
+      <label>Telefono (facoltativo)<input name="telefono" autocomplete="tel" /></label>
+      <label>Messaggio<textarea name="messaggio" required></textarea></label>
+      <button type="submit">Invia messaggio</button>
+      <p class="msg" data-form-msg hidden></p>
+    </form>
+
+    <div class="contact-map">
+      <iframe title="Mappa — MAM Architetti, Contrà Valmerlara 23, Vicenza" src={`https://www.google.com/maps?q=${mapQ}&output=embed`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
 </Layout>
+
+<script>
+  // Senza backend: il form apre l'email precompilata (mailto). Con endpoint/Netlify fa POST normale.
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  const mailto = form?.getAttribute('data-mailto');
+  if (form && mailto) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const nome = String(fd.get('nome') || '');
+      const email = String(fd.get('email') || '');
+      const tel = String(fd.get('telefono') || '');
+      const msg = String(fd.get('messaggio') || '');
+      const subject = encodeURIComponent('Richiesta dal sito — ' + nome);
+      const body = encodeURIComponent(`Nome: ${nome}\nEmail: ${email}\nTelefono: ${tel || '-'}\n\n${msg}`);
+      window.location.href = `mailto:${mailto}?subject=${subject}&body=${body}`;
+      const note = form.querySelector<HTMLElement>('[data-form-msg]');
+      if (note) { note.textContent = 'Si apre il tuo programma di posta con il messaggio pronto da inviare.'; note.hidden = false; }
+    });
+  }
+</script>

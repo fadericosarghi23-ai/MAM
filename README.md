@@ -1,65 +1,48 @@
-# Base architettura (clone di mamarchitetti.it)
+# MAM Architetti — sito
 
-Base riutilizzabile per **studi di architettura/interior**, ricostruita dall'aspetto di
-`mamarchitetti.it` (minimalismo monocromo, Open Sans, slideshow, griglia di progetti).
-Struttura, layout, design system e animazioni sono fedeli al sorgente; **tutti i contenuti del
-cliente sono segnaposto** `[[DA COMPILARE]]`. La base è pensata per il **posizionamento SEO + locale (GEO)**:
-il sorgente è bellissimo ma povero di testo e di dati struttura — qui il motore SEO/GEO è completo.
-
-Astro 5, CSS senza framework, tutto guidato dai dati in `src/data/`. È **in italiano**.
-
-> Il mirror statico 1:1 del sorgente (solo riferimento visivo, non pubblicabile) è in `../mam-source/`,
-> servibile con `node ../mam-source/tools/serve.mjs` → http://localhost:4791
+Sito di **MAM Architetti**, studio di architettura a Vicenza (architettura, interni, allestimenti).
+Astro 5, statico, CSS senza framework, in italiano. Design minimale monocromo (Open Sans, bianco/nero),
+con slideshow in home, griglia progetti con lightbox, pagina studio con organigramma e contatti con form e mappa.
 
 ```bash
-npm run dev            # http://localhost:4790
-npm run build          # dist/ statico
-npm run slots          # slot ancora aperti ([[DA COMPILARE]] e [[DA VALIDARE]])
-npm run check-residui  # residui di clienti precedenti: deve dare 0
+npm install
+npm run dev      # http://localhost:4790
+npm run build    # output statico in dist/
 ```
 
-## Pagine (stessa struttura del sorgente)
+## Pagine
 
 | Rotta | Contenuto |
 | --- | --- |
-| `/` | slideshow a tutto schermo (5 slide), header trasparente, H1 nascosto per SEO |
-| `/progetti/` | griglia 2 colonne di quadrati 1:1, titolo in hover (8 progetti d'esempio) |
-| `/progetti/[slug]/` | apertura + titolo + luogo/anno + dati (cliente/destinazione/intervento/stato/team) + descrizione + galleria con lightbox |
-| `/studio/` | apertura + presentazione + Fondatori / Collaboratori / Hanno collaborato |
-| `/contatti/` | apertura + blocco NAP (indirizzo, email, telefono, indicazioni) con microdati |
-| privacy, cookie, mappa del sito, 404 | pagine di servizio, guidate da `site.ts` |
+| `/` | slideshow a tutto schermo + intro studio + griglia progetti (lightbox) |
+| `/progetti/` | griglia dei progetti (immagini reali, lightbox) |
+| `/studio/` | presentazione + organigramma: fondatori (con slot foto), collaboratori, hanno collaborato |
+| `/contatti/` | indirizzo, telefono, email, **form** e **mappa** (monocroma) |
+| privacy, cookie, mappa del sito, 404 | pagine di servizio |
 
-## SEO / GEO — cosa è già pronto
+## SEO / GEO
 
-- **Meta per pagina**: `<title>` e description (segnaposto) in ogni pagina; canonical, Open Graph, Twitter, robots.
-- **Un H1 per pagina** (sulla home è nascosto visivamente per non alterare il look).
-- **JSON-LD** in `Layout.astro`: `ProfessionalService`+`LocalBusiness` con indirizzo, **coordinate geo**,
-  **aree servite**, **orari** (`openingHoursSpecification`), competenze, persone, catalogo servizi; `WebSite`, `WebPage`, `BreadcrumbList`.
-- **Local SEO (GEO)**: NAP coerente (nome/indirizzo/telefono) in footer, contatti e schema; meta `geo.region/position`, `ICBM`; link Google Maps.
-- `sitemap-index.xml`, `robots.txt`, `llms.txt`, `site.webmanifest` generati dai dati.
+Tutto il motore è centralizzato in `src/data/site.ts` (NAP, coordinate, aree servite, orari).
+In ogni pagina: `<title>`/description, un H1, JSON-LD `ProfessionalService`+`LocalBusiness` con
+indirizzo e coordinate di Vicenza, meta geo, Open Graph, sitemap, robots, llms.txt.
 
-> Regola NAP: nome, indirizzo e telefono devono essere **identici** in `site.ts`, su Google Business Profile e sulle directory.
+> Regola NAP: nome, indirizzo e telefono devono restare identici qui, su Google Business Profile e sulle directory.
 
-## Come si riempie (in ordine)
+## Dove stanno i contenuti
 
-1. **`src/data/site.ts`** — identità + NAP + `geo` (lat/lng da Google Maps) + `geoRegion` + `areeServite` + `orari` + social. È il cuore SEO/GEO.
-2. **`src/data/home.ts`** — title/description/H1 della home.
-3. **`src/data/progetti.ts`** — progetti (titolo, luogo, anno, dati, descrizione) e relative immagini.
-4. **`src/data/team.ts`** — presentazione studio, fondatori, collaboratori.
-5. **`src/data/servizi.ts`** — ambiti/servizi (keyword per SEO e JSON-LD).
-6. **Immagini**: ogni foto è un segnaposto `ph(id, w, h, …)` che genera un SVG grigio delle stesse
-   misure (`/img/placeholder/<id>.svg`). Per la foto vera: metti il file in `public/img/...` e
-   sostituisci la `ph(...)` con `{ src, width, height, alt }` (o `responsive: true` con le varianti).
-   Misure: slide hero 1600×900, copertina progetti 1200×1200, apertura progetto 1600×900,
-   galleria 1600×935 (orizzontale) e 900×1200 (verticale), studio/contatti 1600×900, OG 1200×630.
-7. **Logo**: `public/img/logo/logo.svg` (scuro) e `logo-light.svg` (chiaro), 940×264.
-8. **Favicon/icone**: `public/favicon.svg` segnaposto; generare `favicon.ico`/`apple-touch`/`icon-192/512` dal logo.
-9. **Dominio**: su Netlify arriva da `URL`; in locale resta il segnaposto in `astro.config.mjs`.
+- `src/data/site.ts` — identità, contatti (NAP), coordinate, aree servite, **orari** (da compilare), form.
+- `src/data/mam.ts` — slide della home, intro, elenco progetti (immagini in `public/img/mam/`).
+- `src/data/team.ts` — testo studio, fondatori (con slot `foto`), collaboratori.
+- `src/data/servizi.ts` — ambiti/servizi (keyword + JSON-LD).
 
-Cerca sempre `[[DA COMPILARE]]` (o `npm run slots`) per trovare tutti gli slot.
+### Form contatti
+In `src/data/site.ts → form`: valorizza `endpoint` (Formspree/Resend) per l'invio via POST, oppure
+`netlify: true` per usare Netlify Forms. Finché sono vuoti, il form apre l'email precompilata (mailto).
 
-## Animazioni
+### Foto dei fondatori
+Metti il file in `public/img/mam/team/` e valorizza `foto` nel relativo fondatore in `src/data/team.ts`.
 
-Tutte vanilla (niente GSAP/Lenis, come il sorgente): slideshow hero (dissolvenza + zoom automatici,
-pallini), header trasparente→pieno, reveal in scroll (IntersectionObserver), hover della griglia
-progetti (zoom + titolo), lightbox della galleria progetto. Il codice animazioni non va toccato al riempimento.
+## Deploy (Netlify)
+
+`netlify.toml` già pronto: build `npm run build`, publish `dist`, Node 20. Il dominio canonico
+arriva dalla variabile `URL` di Netlify (collega il dominio definitivo nelle impostazioni del sito).
